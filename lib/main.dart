@@ -57,58 +57,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Container(
-       // alignment: Alignment.topLeft,
         margin: EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SfDateRangePicker(
-              controller: _controller,
-              view: DateRangePickerView.month,
-              monthViewSettings: DateRangePickerMonthViewSettings(
-                firstDayOfWeek: 1,
-                //showTrailingAndLeadingDates: true,
-                dayFormat: 'EEE',
-              ),
-              // initialSelectedRanges: [
-              //   PickerDateRange(
-              //       DateTime.now().subtract(const Duration(days: 4)),
-              //       DateTime.now().add(const Duration(days: 3)))
-              // ],
-              //todayHighlightColor: redText,
-               minDate: DateTime.now().add(const Duration(days: -800)),
-              //maxDate: DateTime.now().add(const Duration(days: 800)),
-              onSelectionChanged: _onSelectionChanged,
-              selectionMode: DateRangePickerSelectionMode.multiRange,
-              //backgroundColor: lightbackgroundColor,
-              rangeSelectionColor: rangeSelectionColor,
-              endRangeSelectionColor:  endRangeSelectionColor,
-              startRangeSelectionColor: startRangeSelectionColor,
-              //selectionRadius: 10,
-              selectionShape: DateRangePickerSelectionShape.circle,
+        child:
+            //Expanded(
+            //flex: 9,
 
-              headerStyle: DateRangePickerHeaderStyle(
-                textAlign: TextAlign.center,
-                textStyle: TextStyle(
-                    color: blackText,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400),
-                //backgroundColor: lightbackgroundColor,
-              ),
-
-              // monthCellStyle: DateRangePickerMonthCellStyle(
-              //   weekendDatesDecoration: BoxDecoration(
-              //       color: lightbackgroundColor, shape: BoxShape.circle),
-              //   leadingDatesTextStyle: TextStyle(color: Colors.black38),
-              //   trailingDatesTextStyle: TextStyle(color: Colors.black38),
-              // ),
-
-              cellBuilder: bildCell,
-
-              /////////////////////////////////////
-            ),
-            rangeWidget(),
-          ],
+            Container(
+          child:
+              //  ListView(children: <Widget>[
+              Container(
+            //height: MediaQuery.of(context).size.height * 0.85,
+            child: calendar(),
+            // rangeWidget(),
+          ),
+          // ]),
+          //      )
         ),
       ),
     );
@@ -121,49 +84,130 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _difference = 0;
       args.value.forEach((item) {
+        print('start - ${item.startDate},  end - ${item.endDate}');
         if (item.endDate != null)
           _difference += item.endDate.difference(item.startDate).inDays + 1;
+      });
+
+      _ranges.forEach((element) {
+        print('ranges- ${element.startDate} - ${element.endDate}');
       });
     });
   }
 
-  Widget bildCell(
+  Widget calendar() {
+    return SfDateRangePicker(
+      controller: _controller,
+      view: DateRangePickerView.month,
+      navigationDirection: DateRangePickerNavigationDirection.vertical,
+      enableMultiView: true,
+      viewSpacing: 0,
+      
+      monthViewSettings: DateRangePickerMonthViewSettings(
+        firstDayOfWeek: 1,
+        //showTrailingAndLeadingDates: true,
+        dayFormat: 'EEE',
+      ),
+      // initialSelectedRanges: [
+      //   PickerDateRange(
+      //       DateTime.now().subtract(const Duration(days: 4)),
+      //       DateTime.now().add(const Duration(days: 3)))
+      // ],
+      //todayHighlightColor: redText,
+      minDate: DateTime.now().add(const Duration(days: -800)),
+      //maxDate: DateTime.now().add(const Duration(days: 800)),
+      onSelectionChanged: _onSelectionChanged,
+      selectionMode: DateRangePickerSelectionMode.multiRange,
+      //toggleDaySelection: true,
+      //backgroundColor: lightbackgroundColor,
+      selectionRadius: 20,
+      rangeSelectionColor: rangeSelectionColor,
+      endRangeSelectionColor: endRangeSelectionColor,
+      startRangeSelectionColor: startRangeSelectionColor,
+      
+      selectionShape: DateRangePickerSelectionShape.circle,
+
+      headerStyle: DateRangePickerHeaderStyle(
+        textAlign: TextAlign.left,
+        textStyle: TextStyle(
+            color: blackText, fontSize: 20, fontWeight: FontWeight.w400),
+        backgroundColor: lightbackgroundColor,
+      ),
+
+      // monthCellStyle: DateRangePickerMonthCellStyle(
+      //   weekendDatesDecoration: BoxDecoration(
+      //       color: lightbackgroundColor, shape: BoxShape.circle),
+      //   leadingDatesTextStyle: TextStyle(color: Colors.black38),
+      //   trailingDatesTextStyle: TextStyle(color: Colors.black38),
+      // ),
+/////////CELL BUILDER
+      cellBuilder: buildCell,
+
+      /////////////////////////////////////
+    );
+  }
+
+  Widget buildCell(
       BuildContext context, DateRangePickerCellDetails cellDetails) {
     int res = dateCalculator(cellDetails.date);
     bool today = false;
-    if(DateFormat('yyyy-MM-dd').format(cellDetails.date) == DateFormat('yyyy-MM-dd').format(_today)) today = true;
-    
-    return Container(
-        
-        //width: cellDetails.bounds.width,
-        //height: cellDetails.bounds.height,
-        //alignment: Alignment.center,
-        //margin: EdgeInsets.all(2),
-        padding: EdgeInsets.all(5),
-        //decoration: BoxDecoration(color: lightbackgroundColor, shape: BoxShape.rectangle),
-        child: Stack(
-          children: [
-            Positioned(
-                top: 10,
-                left: 20,
-                child: Text(
-                  res.toString(),
-                  style: TextStyle(color: res == 0 ? redText : greenText),
-                )),
+    if (DateFormat('yyyy-MM-dd').format(cellDetails.date) ==
+        DateFormat('yyyy-MM-dd').format(_today)) today = true;
 
-             
-            Text(cellDetails.date.day.toString(), 
-            style: TextStyle(fontWeight: today ? FontWeight.w800 : FontWeight.w400,
-                                //color: today ? Colors.blue : blackText,
-                                fontSize: 15,
-                                ),),
-            //Text(DateFormat('d').format(cellDetails.date)),
-          ],
-        ));
+    return Container(
+
+        // width: cellDetails.bounds.width,
+        // height: cellDetails.bounds.height,
+        // padding: EdgeInsets.all(5),
+
+        // //decoration: BoxDecoration(color: lightbackgroundColor, shape: BoxShape.rectangle),
+        // child: Stack(
+        //   children: [
+        //     Positioned(
+        //         bottom: 10,
+        //         left: 20,
+        //         child: Text(
+        //           res.toString(),
+        //           style: TextStyle(color: res == 0 ? redText : greenText),
+        //         )),
+
+        //     Text(cellDetails.date.day.toString(),
+        //       style: TextStyle(
+        //         fontWeight: today ? FontWeight.w800 : FontWeight.w400,
+        //         fontSize: 20,
+        //      ), ),
+        //     //Text(DateFormat('d').format(cellDetails.date)),
+        //   ],
+        // )
+        ////////////////
+        child: Column(
+      children: [
+        Container(
+          padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+          child: Text(
+            cellDetails.date.day.toString(),
+            style: TextStyle(
+              fontWeight: today ? FontWeight.w800 : FontWeight.w400,
+              fontSize: 15,
+            ),
+          ),
+        ),
+        Container(
+          alignment: Alignment.bottomRight,
+          margin: EdgeInsets.only(left: 15),
+          // decoration: BoxDecoration(
+          //   shape: BoxShape.circle, color: lightbackgroundColor,),
+          padding: EdgeInsets.all(3),
+          child: Text(res.toString(),
+              style: TextStyle(color: res == 0 ? redText : greenText)),
+        ),
+      ],
+    ));
   }
 
   Widget rangeWidget() {
     return Column(
+
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -203,6 +247,10 @@ class _MyHomePageState extends State<MyHomePage> {
             item.endDate.isAfter(date)) {
           differrence += date.difference(item.startDate).inDays + 1;
         }
+        //поправка выделенного диапазона +1
+        if (!item.endDate.isBefore(date) && !item.startDate.isAfter(date)) { differrence --;}
+        
+        //if(item.startDate.compareTo(date) == 0) differrence --;
         //else print('ERROR date!!!!!!!!!!  $date');
       }
     });

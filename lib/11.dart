@@ -1,5 +1,58 @@
 //
+ Widget build([BuildContext context]) {
+    final Widget calendar = Container(
+      height: 250,
+      padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+      color: model.cardThemeColor,
+      child: Theme(
+        data: model.themeData.copyWith(accentColor: model.backgroundColor),
+        child: _getVerticalCalendar(),
+      ),
+    );
+    final Widget _cardView = Card(
+        elevation: 5,
+        margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: calendar);
+    return Scaffold(
+        backgroundColor: model.themeData == null ||
+                model.themeData.brightness == Brightness.light
+            ? null
+            : const Color(0x171A21),
+        body: Column(children: <Widget>[
+          Expanded(
+              flex: 9,
+              child: model.isWeb
+                  ? Center(
+                      child:
+
+                          /// 580 defines 550 height and 30 margin
+                          Container(width: 400, height: 580, child: _cardView))
+
+                  /// 590 defines 550 height and 40 margin
+                  : ListView(children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.85,
+                        child: calendar,
+                      )
+                    ]))
+        ]));
+  }
+
+  /// Returns the date range picker widget based on the properties passed.
+  SfDateRangePicker _getVerticalCalendar() {
+    return SfDateRangePicker(
+            toggleDaySelection: true,
+      enableMultiView: true,
+      navigationDirection: DateRangePickerNavigationDirection.vertical,
+      selectionMode: DateRangePickerSelectionMode.multiRange,
+      startRangeSelectionColor: Colors.deepPurple,
+      // selectionShape: DateRangePickerSelectionShape.rectangle,
+
+    );
+  }
+
   
+   
 /// Dart import
 import 'dart:math';
 
